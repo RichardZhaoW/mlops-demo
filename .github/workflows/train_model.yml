@@ -32,13 +32,6 @@ jobs:
       uses: Azure/aml-run@v1
       with:
         azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}
-    
-    - name: Check variables
-      env:
-        PAYLOAD_CONTEXT: ${{ toJson(github.event.client_payload.data) }}
-      run: |
-        if [ -z "${{ github.event.client_payload.data.experimentName }}"]; then echo "experiment id is NULL"; exit 1; else echo "model_name is ${{ toJson(github.event.client_payload.data.experimentName) }}"; fi;
-        if [ -z "${{ github.event.client_payload.data.runId }}"]; then echo "runId is NULL"; exit 1; else echo "model_version is ${{ toJson(github.event.client_payload.data.runId) }}"; fi;
         
     - uses: Azure/aml-compute@v1
       id: aml_compute
@@ -51,8 +44,8 @@ jobs:
       uses: Azure/aml-registermodel@ashishonce/adddefaulttags
       with:
          azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}
-         run_id:  ${{ github.event.client_payload.data.runId }}
-         experiment_name: ${{ github.event.client_payload.data.experimentName }}
+         run_id:  ${{ steps.aml_run.outputs.run_id }}
+         experiment_name: ${{ steps.aml_run.outputs.experiment_name }}
 
     # Deploy your model to dev (this is optional)
     - name: Dev Deploy
