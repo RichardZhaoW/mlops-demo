@@ -4,7 +4,7 @@ pipeline:
     PipelineParam1:
     type: int
     default: 1
-  default_compute: igniteCluster
+  default_compute: githubaks
   steps:
     Step1:
       runconfig: "/code/train/run_config.yml"
